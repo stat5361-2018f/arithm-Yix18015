@@ -1,0 +1,52 @@
+---
+title: "hw2-Q2"
+author: "Yiyi Xu"
+date: "9/13/2018"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r}
+options(digits=20)
+```
+## .Machine$double.eps
+
+.Maitchine$double.eps is the smallest positive floating- point number as it equals to 2^(-52) 
+```{r }
+.Machine$double.eps
+1+  .Machine$double.eps==1
+1-  .Machine$double.eps==1
+.Machine$double.base ^ (.Machine$double.ulp.digits) == .Machine$double.eps
+```
+
+## .Machine$double.neg.eps
+
+.Machine$double.neg.eps is a small positive floating-point number which equals to 2^(-52-1L).Also, it is the smallest positive number such that 1+x==1
+```{r}
+.Machine$double.neg.eps
+ .Machine$double.base ^ (.Machine$double.ulp.digits - 1L)==.Machine$double.neg.eps
+1- .Machine$double.neg.eps==1
+1+ .Machine$double.neg.eps==1
+1+ .Machine$double.base ^ (.Machine$double.ulp.digits - 2L)==1
+1+ .Machine$double.base ^ (.Machine$double.ulp.digits - 3L)==1
+
+```
+
+## .Machine$double.xmax
+
+.Machine$double.xmax is a large normalized floating-point number, but not the largest number in my machines. In some machines, it may be the largest number.
+```{r}
+.Machine$double.xmax
+(1 - .Machine$double.neg.eps) * .Machine$double.base ^ .Machine$double.max.exp
+(1 - .Machine$double.neg.eps) * .Machine$double.base ^ .Machine$double.max.exp ==.Machine$double.xmax
+```
+
+## .Machine$double.xmin
+
+.Machine$double.xmin is the smallest postive normalized floating-point number equals 2^(-1022)
+```{r}
+.Machine$double.xmin
+.Machine$double.base ^ (.Machine$double.min.exp)
+.Machine$double.base ^ (.Machine$double.min.exp) == .Machine$double.xmin
+```
