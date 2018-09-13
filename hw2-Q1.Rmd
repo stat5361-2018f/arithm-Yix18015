@@ -1,0 +1,155 @@
+---
+title: "Approximation of Normal Distribution by Monte Carlo in R Markdown"
+author: "Yiyi Xu"
+date: "9/11/2018"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+### Abstrict 
+Conside approximation of Normal Distribution by the Monte Carlo Methods.
+
+
+## 1 Introduction
+The main goal of this report is to use bookdown to produce a report for considring approximation of Normal Distribution By Monte Carlo Methods. The report will contain a table about the experiment with the approximation at $n\in {10^{2}, 10^{3}, 10^{4}}$ at $t\in{0.0, 0.67, 0.84, 1.28, 1.65, 2.32, 2.58, 3.09, 3.72}$. Also, the report will contain boxplot to compare how n value effect the result bias of the experiment. 
+
+## 2 Math Equation 
+Distribution Function of N(0,1)
+$$\Phi(t) = \int _{-\infty}^{t} \frac{1}{\sqrt{2 \pi}} e^{-y^2/2} dy$$ 
+
+Monte Carlo methods
+$$\hat{\Phi}(t) = \frac{1}{n} \sum _{i=1}^{n} I (X_i \leq t)$$
+
+## 3 Table 
+
+Define a function which satisfy Monte Carlo Method. 
+Create N iid r.v., use Monte Carlo method to find the probability of Xi>t
+```{r }
+F <- function(n,t){
+  set.seed(1)
+  (length(which(rnorm(n,0,1)<t)))/n
+}
+
+```
+
+```{r setup, include=FALSE}
+
+F(100,0.00)
+F(100,0.67)
+F(100,0.87)
+F(100,1.28)
+F(100,1.65)
+F(100,2.32)
+F(100,2.58)
+F(100,3.09)
+F(100,3.72)
+
+F(1000,0.00)
+F(1000,0.67)
+F(1000,0.87)
+F(1000,1.28)
+F(1000,1.65)
+F(1000,2.32)
+F(1000,2.58)
+F(1000,3.09)
+F(1000,3.72)
+
+F(10000,0.00)
+F(10000,0.67)
+F(10000,0.87)
+F(10000,1.28)
+F(10000,1.65)
+F(10000,2.32)
+F(10000,2.58)
+F(10000,3.09)
+F(10000,3.72)
+
+```
+
+As we create the previouse function, we plug in different n and t values and get results. By create a table of the results, we can easily compare the result value with the true value. 
+
+|$$\hat{\Phi}(t)$$ | t=0.00| t=0.67| t=0.84| t=1.28| t=1.65| t=2.32| t=2.580| t=3.09| t=3.72|
+|:--|:--|:--|:--|:--|:--|:--|:--|:--|:--|
+|n=10    | 0.4600  | 0.7399  | 0.8199  | 0.9100  | 0.9699  | 0.9899  | 1       |    1  | 1       |
+|n=100   | 0.5180  | 0.7419  | 0.8040  | 0.8920  | 0.9409  | 0.9899  | 0.9959  | 0.9989  | 0.9989  |
+|n=1000  | 0.5068  | 0.7481  |0.8015  | 0.8941  | 0.9494  | 0.9906  | 0.9959  | 0.9992  | 0.9999  |
+|$${\Phi}(t)$$|0.5000|  0.7486  |0.7995|  0.8997   |0.9505  |0.9898  |0.9951  |0.9990   |0.9999
+
+
+## 4 Figure- BoxPlot 
+
+At first, create a G function to repeat each experiment at 100 times to create a bias vector. 
+Then plug in different t and n values in order to see how the bias changes as n value changes. 
+```{r}
+G <- function(n,t,p){
+  a <- c(0)
+  for(i in 1:n){
+    a[i] <- ((length(which(rnorm(n,0,1)<t)))/n)-p
+  }
+  a
+}
+```
+
+```{r pressure, echo=FALSE}
+a1 <- G(100,0.0,0.5)     #n=100, t=0.0 ,p=0.5
+a2 <- G(100,0.67,0.7486) #n=100, t=0.67,p=0.7486
+a3 <- G(100,0.84,0.7995) #n=100, t=0.84,p=0.7995
+a4 <- G(100,1.28,0.8997) #n=100, t=1.28,p=0.8997
+a5 <- G(100,1.65,0.9505) #n=100, t=1.65,p=0.9505
+a6 <- G(100,2.32,0.9898) #n=100, t=2.32,p=0.9898
+a7 <- G(100,2.58,0.9951) #n=100, t=2.58,p=0.9951
+a8 <- G(100,3.09,0.9990) #n=100, t=3.09,p=0.9990
+a9 <- G(100,3.72,0.9999) #n=100, t=3.72,p=0.9999 
+
+b1 <- G(1000,0.0,0.5)     #n=1000, t=0.0 ,p=0.5
+b2 <- G(1000,0.67,0.7486) #n=1000, t=0.67,p=0.7486
+b3 <- G(1000,0.84,0.7995) #n=1000, t=0.84,p=0.7995
+b4 <- G(1000,1.28,0.8997) #n=1000, t=1.28,p=0.8997
+b5 <- G(1000,1.65,0.9505) #n=1000, t=1.65,p=0.9505
+b6 <- G(1000,2.32,0.9898) #n=1000, t=2.32,p=0.9898
+b7 <- G(1000,2.58,0.9951) #n=1000, t=2.58,p=0.9951
+b8 <- G(1000,3.09,0.9990) #n=1000, t=3.09,p=0.9990
+b9 <- G(1000,3.72,0.9999) #n=1000, t=3.72,p=0.9999
+
+c1 <- G(10000,0.0,0.5)     #n=10000, t=0.0 ,p=0.5
+c2 <- G(10000,0.67,0.7486) #n=10000, t=0.67,p=0.7486
+c3 <- G(10000,0.84,0.7995) #n=10000, t=0.84,p=0.7995
+c4 <- G(10000,1.28,0.8997) #n=10000, t=1.28,p=0.8997
+c5 <- G(10000,1.65,0.9505) #n=10000, t=1.65,p=0.9505
+c6 <- G(10000,2.32,0.9898) #n=10000, t=2.32,p=0.9898
+c7 <- G(10000,2.58,0.9951) #n=10000, t=2.58,p=0.9951
+c8 <- G(10000,3.09,0.9990) #n=10000, t=3.09,p=0.9990
+c9 <- G(10000,3.72,0.9999) #n=10000, t=3.72,p=0.9999
+
+
+
+t1 <- c("n=100","n=1000","n=10000")  
+boxplot(a1,b1,c1,names=t1,main="Side-By-Size Boxplot of Bias of t=0.00")
+
+t2 <- c("n=100","n=1000","n=10000")  
+boxplot(a2,b2,c2,names=t2,main="Side-By-Size Boxplot of Bias of t=0.67")
+t3 <- c("n=100","n=1000","n=10000")  
+boxplot(a3,b3,c3,names=t3,main="Side-By-Size Boxplot of Bias of t=0.84")
+t4 <- c("n=100","n=1000","n=10000")  
+boxplot(a4,b4,c4,names=t4,main="Side-By-Size Boxplot of Bias of t=1.28")
+t5 <- c("n=100","n=1000","n=10000")  
+boxplot(a5,b5,c5,names=t5,main="Side-By-Size Boxplot of Bias of t=1.65")
+t6 <- c("n=100","n=1000","n=10000")  
+boxplot(a6,b6,c6,names=t6,main="Side-By-Size Boxplot of Bias of t=2.32")
+t7 <- c("n=100","n=1000","n=10000")  
+boxplot(a7,b7,c7,names=t7,main="Side-By-Size Boxplot of Bias of t=2.58")
+t8 <- c("n=100","n=1000","n=10000")  
+boxplot(a8,b8,c8,names=t8,main="Side-By-Size Boxplot of Bias of t=3.09")
+t9 <- c("n=100","n=1000","n=10000")  
+boxplot(a9,b9,c9,names=t9,main="Side-By-Size Boxplot of Bias of t=3.72")
+
+```
+
+
+## 5 Summary 
+By Monte Carlo Methods, we obtain numerial result by repeating random sampling. By analysis the boxplot, as the N (number of Monte Carlo Methods repeat) increase, the bias of the result is smaller.  
+
+
+
